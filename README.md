@@ -24,10 +24,10 @@ cd javaPerpustakaan
 
 Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/).
 
-## Resources for Learning Electron
+## Resources for Learning Java
 
-- [javaPerpustakaan/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [Kelas Terbuka](https://github.com/kelasterbuka/JAVA_dasar_programming) - all sources code program
+- [javaPerpustakaan/docs](https://docs.oracle.com/en/java/) - all of Java's documentation
+- [Kelas Terbuka](https://github.com/kelasterbuka/JAVA_dasar_programming) - all sources of code program
 
 ## License
 

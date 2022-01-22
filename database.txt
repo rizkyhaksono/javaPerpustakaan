@@ -4,3 +4,5 @@ purcell_2009_1,2009,purcell,wiley,calculus
 faqihza_2019_1,2019,faqihza,gramedia,belajar C++
 faqihza_2019_2,2019,faqihza,gramedia,belajar python
 faqihza_2019_3,2019,faqihza,gramedia,belajar Java
+rizky_2022_1,2022,rizky,belajar java,wildcar
+rizky_2021_1,2021,rizky,cara membuat pc,gramedia

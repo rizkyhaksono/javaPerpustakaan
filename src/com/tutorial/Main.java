@@ -1,8 +1,14 @@
 package com.tutorial;
 
+// Memakai * agar include semua library
 import java.io.*;
 import java.time.Year;
 import java.util.*;
+
+// Library untuk deleteData
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Main {
 
@@ -42,6 +48,7 @@ public class Main {
                     System.out.println("Tambah Buku");
                     System.out.println("===========");
                     tambahData();
+                    tampilkanData();
                     break;
                 case "4":
                     System.out.println("\n=========");
@@ -53,12 +60,12 @@ public class Main {
                     System.out.println("\n==========");
                     System.out.println("Hapus Buku");
                     System.out.println("==========");
-                    // Hapus buku
+                    deleteData();
                     break;
                 default:
-                    System.err.println("\nOpsi tidak ada di dalam menu!\nSilahkan pilih antara 1-5!");
+                    System.err.println("Opsi tidak ada di dalam menu!\nSilahkan pilih antara 1-5!\n");
             }
-            isLanjutkan = getYesorNo("\nApakah Anda Ingin Melanjutkan");
+            isLanjutkan = getYesorNo("Apakah Anda Ingin Melanjutkan");
         }
     }
 
@@ -72,10 +79,11 @@ public class Main {
         }catch(Exception ex){
             System.out.println("Database Tidak Ditemukan!");
             System.out.println("Silahkan Tambah Data Terlebih Dahulu!");
+            tambahData();
             return;
         }
 
-        System.out.println("\n| No |\tTahun |\tPenulis                |\tPenerbit               |\tJudul Buku");
+        System.out.println("\n| No |\tTahun |\tPenulis                |\tJudul Buku               |\tPenerbit");
         System.out.println("----------------------------------------------------------------------------------------------------------");
 
         String dataFile = bufferInput.readLine();
@@ -108,6 +116,7 @@ public class Main {
         }catch(Exception e){
             System.err.println("Database Tidak Ditemukan!");
             System.err.println("Silahkan Tambah Data Terlebih Dahulu");
+            tambahData();
             return;
         }
 
@@ -183,6 +192,88 @@ public class Main {
         bufferOutput.close();
     }
 
+    private static void deleteData() throws IOException {
+
+        // Ambil database original
+        File database = new File("database.txt");
+        FileReader fileInput = new FileReader(database);
+        BufferedReader bufferedInput = new BufferedReader(fileInput);
+
+        // Buat database sementara
+        File tempDB = new File("tempDB.txt");
+        FileWriter fileOutput = new FileWriter(tempDB);
+        BufferedWriter bufferedOutput = new BufferedWriter(fileOutput);
+
+        // Tampilkan data
+        System.out.println("List data buku");
+        tampilkanData();
+
+        // Ambil user input dari data yang ingin dihapus
+        Scanner userOption = new Scanner(System.in);
+        System.out.print("\nMasukkan data yang ingin dihapus: ");
+
+        long deleteNum = userOption.nextInt();
+
+        // Cek apakah user memasukkan string atau char
+
+
+        // Looping untuk membaca tiap data baris dan skip untuk data yang ingin dihapus
+        boolean isFound = false;
+        int entryCounts = 0;
+
+        String data = bufferedInput.readLine();
+
+        while(data != null){
+            entryCounts++;
+
+            boolean isDelete = false;
+
+            StringTokenizer st = new StringTokenizer(data, ",");
+
+            // Tampilkan data yang ingin dihapus
+            if(deleteNum == entryCounts){
+                System.out.println("\nData yang ingin dihapus:");
+                System.out.println("---------------------------");
+                System.out.println("Referensi : " + st.nextToken());
+                System.out.println("Tahun     : " + st.nextToken());
+                System.out.println("Penulis   : " + st.nextToken());
+                System.out.println("Penerbit  : " + st.nextToken());
+                System.out.println("Judul     : " + st.nextToken());
+
+                isDelete = getYesorNo("Apakah anda yakin untuk menghapus");
+                isFound = true;
+            }
+
+            if(isDelete){
+                // Skip data ke tempDB.txt
+                System.out.print("\nData berhasil dihapus!\n");
+            }else{
+                // Pindahkan data original ke sementara
+                bufferedOutput.write(data);
+                bufferedOutput.newLine();
+            }
+            data = bufferedInput.readLine();
+        }
+
+        if(!isFound){
+            System.err.println("Data tidak ditemukan!");
+        }
+
+        // Menulis ulang data ke database
+        bufferedOutput.flush();
+        fileInput.close();
+        bufferedInput.close();
+        fileOutput.close();
+        bufferedOutput.close();
+        System.gc();
+
+        // Delete data original
+        database.delete();
+
+        // Rename data sementara menjadi data original
+        tempDB.renameTo(database);
+    }
+
     private static long ambilEntryPerTahun(String penulis, String tahun) throws IOException{
         FileReader fileInput = new FileReader("database.txt");
         BufferedReader bufferInput = new BufferedReader(fileInput);
@@ -244,7 +335,7 @@ public class Main {
 
         // Jika cari data, maka ini ditampilkan
         if (isDisplay) {
-            System.out.println("\n| No |\tTahun |\tPenulis                |\tPenerbit               |\tJudul Buku");
+            System.out.println("\n| No |\tTahun |\tPenulis                |\tJudul Buku             |\tPenerbit");
             System.out.println("----------------------------------------------------------------------------------------------------------");
         }
 

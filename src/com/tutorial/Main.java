@@ -1,6 +1,7 @@
 package com.tutorial;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -36,7 +37,7 @@ public class Main {
                     System.out.println("\n=========");
                     System.out.println("Cari Buku");
                     System.out.println("=========");
-                    // Cari data
+                    cariData();
                     break;
                 case "3":
                     System.out.println("\n===========");
@@ -80,6 +81,7 @@ public class Main {
         System.out.println("----------------------------------------------------------------------------------------------------------");
 
         String dataFile = bufferInput.readLine();
+
         int nomorData = 0;
         while(dataFile != null){
             nomorData++;
@@ -98,6 +100,76 @@ public class Main {
         }
 
         System.out.println("----------------------------------------------------------------------------------------------------------");
+    }
+
+    private static void cariData() throws IOException {
+
+        // Membaca database ada atau tidak
+        try {
+            File file = new File("database.txt");
+        }catch(Exception e){
+            System.err.println("Database Tidak Ditemukan!");
+            System.err.println("Silahkan Tambah Data Terlebih Dahulu");
+            return;
+        }
+
+        // Kita ambil keyword dari user
+        Scanner userOption = new Scanner(System.in);
+        System.out.print("Masukkan kata kunci untuk mencari buku: ");
+        String cariString = userOption.nextLine();
+        System.out.println("Anda mencari: " + cariString);
+
+        String[] keywords = cariString.split("\\s+");
+
+        // Kita cek keyword di database
+        cekBukuDiDatabase(keywords);
+
+    }
+
+    private static void cekBukuDiDatabase(String[] keywords) throws IOException{
+
+        // Membuka file pada database
+        FileReader fileInput = new FileReader("database.txt");
+        BufferedReader bufferInput = new BufferedReader(fileInput);
+
+        // Membaca file pada database
+        String dataFile = bufferInput.readLine();
+
+        boolean isExist;
+        int nomorData = 0;
+
+        System.out.println("\n| No |\tTahun |\tPenulis                |\tPenerbit               |\tJudul Buku");
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+
+        while(dataFile != null){
+
+            // cek keywords di dalam baris
+            isExist = true;
+
+            for(String keyword:keywords) {
+                isExist = isExist && dataFile.toLowerCase().contains(keyword.toLowerCase());
+            }
+
+            // jika keyword nya cocok, tampilkan
+            if(isExist){
+                nomorData++;
+                StringTokenizer stringToken = new StringTokenizer(dataFile, ",");
+
+                stringToken.nextToken();
+                System.out.printf("| %2d ", nomorData);
+                System.out.printf("|\t%4s  ", stringToken.nextToken());
+                System.out.printf("|\t%-20s   ", stringToken.nextToken());
+                System.out.printf("|\t%-20s   ", stringToken.nextToken());
+                System.out.printf("|\t%s   ", stringToken.nextToken());
+                System.out.print("\n");
+            }
+
+            dataFile = bufferInput.readLine();
+
+        }
+
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+
     }
 
     private static boolean getYesorNo(String message){
